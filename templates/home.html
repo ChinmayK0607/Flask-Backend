@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+<div id="home-container">
+  <h1 id="home-header">Flask Chat 💬</h1>
+  {% if error %}
+  <p id="error">{{error}}</p>
+  {% endif %}
+  <form method="post" id="chat-widget-home">
+    <div id="name-input">
+      <label for="name">Enter your name</label>
+      <input type="text" id="name" name="name" placeholder="Enter name" value="{{name}}" />
+    </div>
+    <div>
+      <label for="room_name" id="room-label">Select a room:</label>
+      <select id="room_name" name="room_name">
+        <option value="">-- Select a room --</option>
+        <option value="coding">Coding</option>
+        <option value="interview">Interview</option>
+        <option value="chill">Chill</option>
+      </select>
+      <button type="submit" id="join" name="join">Join</button>
+    </div>
+    <hr />
+    <p>or</p>
+    <button type="submit" id="create" name="create">Create Room</button>
+  </form>
+</div>
+{% endblock %}
