@@ -1,12 +1,21 @@
-from flask import Flask, request, render_template, redirect, url_for, session
+from flask import Flask, request, render_template, redirect, url_for, session,jsonify
 from flask_socketio import SocketIO, join_room, leave_room, send
-
+from queue import  Queue
+from utils import find_room, init_room_queues
+#from utils import find_room
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'SDKFJSDFOWEIOF'
 socketio = SocketIO(app)
 
 PREDEFINED_ROOMS = ['coding', 'interview', 'chill']
 rooms = {room_name: {'members': 0, 'messages': []} for room_name in PREDEFINED_ROOMS}
+coding_queue = []
+interview_queue = []
+chill_queue = []
+
+#init_room_queues(PREDEFINED_ROOMS, room_queue)
+
+
 
 @app.route('/', methods=["GET", "POST"])
 def home():
@@ -21,6 +30,26 @@ def home():
         return redirect(url_for('room'))
     return render_template('home.html')
 
+@app.route('/join_queue/<string:room_code>', methods=['POST'])
+def join_queue(room_code):
+    name = session.get('name')
+    room = room_code
+    if room == "coding":
+        coding_queue.append(name)
+        print(coding_queue)
+    elif room == "interview":
+        interview_queue.append(name)
+        print(interview_queue)
+    elif room == "chill":
+        chill_queue.append(name)
+        print(chill_queue)
+    
+    messages = rooms[room]['messages']
+    
+    return render_template('room.html', room=room, user=name, messages=messages),jsonify({'message': 'Joined the queue'}), 200
+#@app.route('/show_room_queue',methods = ['GET'])
+#def show_rooms():
+ #   return jsonify(str(room_queue))
 @app.route('/room')
 def room():
     name = session.get('name')
